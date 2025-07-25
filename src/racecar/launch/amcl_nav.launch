@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="use_rviz" default="true" />
+
+    <!-- for amcl -->    
+    <arg name="init_x" default="0.0" />  <!---0.76 0.207 -0.2-->
+    <arg name="init_y" default="0.0" />
+    <arg name="init_a" default="-0.05" />
+
+    <!-- node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="-1.17 0.218 0 -0.15 0 0.0 /map /odom 1000"/-->
+    <!-- Map server -->
+    
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find racecar)/map/SW02.yaml"/>
+
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <!-- Publish scans from best pose at a max of 10 Hz -->
+        <param name="transform_tolerance" value="0.2" />
+        <param name="gui_publish_rate" value="10.0"/>
+        <param name="laser_max_beams" value="50"/>
+        <param name="min_particles" value="500"/>
+        <param name="max_particles" value="5000"/>
+        <param name="kld_err" value="0.05"/>
+        <param name="kld_z" value="0.99"/>
+        <!-- translation std dev, m -->
+        <param name="odom_alpha1" value="1.0"/>
+        <param name="odom_alpha2" value="0.5"/>
+        <param name="odom_alpha3" value="0.8"/>
+        <param name="odom_alpha4" value="0.5"/>
+        
+        <param name="laser_z_hit" value="0.5"/>
+        <param name="laser_z_short" value="0.05"/>
+        <param name="laser_z_max" value="0.05"/>
+        <param name="laser_z_rand" value="0.5"/>
+        <param name="laser_sigma_hit" value="0.2"/>
+        <param name="laser_lambda_short" value="0.1"/>
+        <param name="laser_lambda_short" value="0.1"/>
+        <param name="laser_model_type" value="likelihood_field"/>
+
+        <!-- <param name="laser_model_type" value="beam"/> -->
+        <param name="laser_likelihood_max_dist" value="2.0"/>
+        <param name="update_min_d" value="0.2"/>
+        <param name="update_min_a" value="0.2"/>
+        <param name="resample_interval" value="2"/>
+        <param name="transform_tolerance" value="0.1"/>
+        <param name="recovery_alpha_slow" value="0.0"/>
+        <param name="recovery_alpha_fast" value="0.0"/>
+
+        <param name="use_map_topic" value="false"/>
+        <!-- param name="first_map_only" value="true"/-->
+        <param name="tf_broadcast" value="true"/>
+
+        <param name="odom_frame_id" value="odom"/>
+        <param name="global_frame_id" value="map"/>
+        <param name="base_frame_id" value="base_footprint"/>
+        <param name="odom_model_type" value="diff"/>
+
+        <param name="initial_pose_x" value="$(arg init_x)"/>
+        <param name="initial_pose_y" value="$(arg init_y)"/>
+        <param name="initial_pose_a" value="$(arg init_a)"/>
+        <param name="initial_cov_xx" value="0.5*0.5" />
+        <param name="initial_cov_yy" value="0.5*0.5" />
+        <param name="initial_cov_aa" value="(π/12)*(π/12)" />
+    </node>
+
+    <!-- ODOMETRY -->
+    <!--rf2o_Laser_Odometry-->
+    <!-- include file="$(find racecar)/launch/includes/rf2o.launch.xml" /-->
+    <!-- include file="$(find rf2o_laser_odometry)/launch/rf2o_laser_odometry.launch" /-->
+    
+    <!-- wheel odometry -->
+    <!-- include file="$(find encoder_driver)/launch/wheel_odom.launch"/-->
+    <!-- Robot_Localization -->
+    <!-- node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+        <rosparam command="load" file="$(find racecar)/param/ekf_params.yaml" />
+    </node-->
+
+    <!-- Localization -->
+    <!-- AMCL -->
+    <!-- include file="$(find racecar)/launch/includes/amcl.launch.xml">
+        <arg name="init_x" value="$(arg init_x)"/>
+        <arg name="init_y" value="$(arg init_y)"/>
+        <arg name="init_a" value="$(arg init_a)"/>
+    </include-->
+
+    <!-- Navstack -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base">
+        <!-- local planner -->
+      
+        <param name="base_global_planner" value="navfn/NavfnROS"/>  
+        <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+    	<param name="planner_frequency" value="10" />
+    	<param name="planner_patience" value="8"/>
+    		
+        <!-- param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>  
+        <rosparam file="$(find racecar)/param/dwa_local_planner_params.yaml" command="load"/-->
+        
+	<param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+	<param name="controller_frequency" value="5.0" />
+	<param name="controller_patience" value="5.0" />
+	<param name="clearing_rotation_allowed" value="false" />
+        <rosparam file="$(find racecar)/param/teb_local_planner_params.yaml" command="load" />
+        <rosparam file="$(find racecar)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find racecar)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <!-- costmap layers -->    
+        <rosparam file="$(find racecar)/param/local_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find racecar)/param/global_costmap_params.yaml" command="load"/> 
+        <!-- move_base params -->
+        <rosparam file="$(find racecar)/param/base_global_planner_params.yaml" command="load"/>
+        <rosparam file="$(find racecar)/param/move_base_params.yaml" command="load"/>
+    </node>
+
+    <node pkg="racecar" type="car_controller_new" respawn="false" name="art_car01_controller" output="screen">       
+        <param name="Vcmd" value="1.0" /> 
+        <param name="baseSpeed" value="1568"/> 
+        <param name="baseAngle" value="90.0"/> 
+        <param name="Angle_gain_p" value="-3.0"/> 
+        <param name="Angle_gain_d" value="-3.0"/> 
+        <param name="Lfw" value="1.5"/> 
+        <param name="vp_max_base" value="200"/> 
+        <param name="vp_min" value="150"/> 
+
+    </node>
+
+
+    <!-- Rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find racecar)/rviz/amcl.rviz" if="$(arg use_rviz)" />
+ 
+</launch>

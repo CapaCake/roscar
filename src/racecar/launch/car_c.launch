@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<launch> 
+    <node pkg="racecar" type="car_controller_new" respawn="false" name="art_car_controller" output="screen">       
+        <param name="Vcmd" value="1.5" /> 
+        <param name="baseSpeed" value="1550"/>  
+        <param name="baseAngle" value="0.0"/> 
+        <param name="Angle_gain_p" value="-3.0"/> 
+        <param name="Angle_gain_d" value="-3.0"/> 
+        <param name="Lfw" value="1.5"/> 
+        <param name="vp_max_base" value="200"/> 
+        <param name="vp_min" value="200"/> 
+
+    </node>
+    </launch> 

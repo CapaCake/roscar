@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/racecar/桌面/smartcar/devel/lib/python3/dist-packages",
+        "/home/racecar/smartcar/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/racecar/桌面/smartcar/devel/lib/python3/dist-packages",
+        "/home/racecar/smartcar/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
+}

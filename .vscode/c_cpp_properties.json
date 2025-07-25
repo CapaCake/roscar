@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/racecar/桌面/smartcar/devel/include/**",
+        "/home/racecar/smartcar/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/racecar/桌面/smartcar/src/hi226_imu/include/**",
+        "/home/racecar/桌面/smartcar/src/laser_go/include/**",
+        "/home/racecar/桌面/smartcar/src/ls01b_v2/include/**",
+        "/home/racecar/桌面/smartcar/src/racecar_driver/include/**",
+        "/home/racecar/桌面/smartcar/src/rf2o_laser_odometry/include/**",
+        "/home/racecar/桌面/smartcar/src/serial/include/**",
+        "/home/racecar/桌面/smartcar/src/vision/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}

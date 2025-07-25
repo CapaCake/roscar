@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<launch>
+    <master auto="start"/>
+
+    <!-- TF setting -->
+    <include file="$(find racecar)/launch/includes/car_tf.launch.xml" />
+
+    <!-- SENSOR DEVICE -->
+    <!-- second startup ls01b lidar -->
+    <include file="$(find ls01b_v2)/launch/ls01b_v2.launch"/> 
+    <!--<include file="$(find rplidar_ros)/launch/rplidar.launch" />-->
+    
+    <!-- IMU-->
+    <arg name="imu_package" default="spec" doc="package type [spec,0x91]"/>
+    <include file="$(find imu_launch)/launch/imu_$(arg imu_package)_msg.launch"/>
+    
+    <!-- Car -->
+    <node pkg="racecar_driver" type="racecar_driver_node" name="racecar_driver"/>
+    
+    <!--mix encoder data and imu data-->
+    <node pkg="encoder_driver" type="encoder_driver_node1" name="imu_encoder_mix" output="screen"/>
+
+    <!-- encoder_driver -->
+    <node pkg="encoder_driver" name="encoder_vel" type="Encoder_vel.py" output="screen">
+        <param name="serial_port" value="/dev/encoder"/>
+        <param name="k" value="default"/>
+        <param name="baud_rate" value="9600"/>
+    </node>
+
+	<!-- Laser -->
+    <node pkg="laser_go" type="laser_go_node" name="laser_go" output="screen"/>	
+    
+    <!-- Vision -->
+    <node pkg="vision" type="cam.py" name="cam" output="screen"/>	
+    
+    <!-- gmapping -->
+    <include file="$(find racecar)/launch/Run_gmapping.launch"/> 
+</launch>

@@ -1,0 +1,4 @@
+# set the udev rule , make the device_port be fixed by arduino
+#
+KERNELS=="2-3", MODE:="0777", SYMLINK+="car"
+

@@ -1,0 +1,8 @@
+prefix=/home/racecar/smartcar/devel
+
+Name: hi226_imu
+Description: Description of hi226_imu
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
